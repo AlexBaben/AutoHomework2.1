@@ -62,14 +62,58 @@ class CallbackTest {
     }
 
     @Test
-    void shouldNotTest() {
+    void shouldNotTestEngName() {
         WebElement form = driver.findElement(By.cssSelector("form"));
         form.findElement(By.cssSelector("[data-test-id=name] input")).sendKeys("Alex");
         form.findElement(By.cssSelector("[data-test-id=phone] input")).sendKeys("+79270000000");
         form.findElement(By.cssSelector("[data-test-id=agreement]")).click();
         form.findElement(By.cssSelector("button")).click();
-        String text = driver.findElement(By.cssSelector("[class=input__sub]")).getText();
+        String text = driver.findElement(By.cssSelector("[data-test-id=name] .input__sub")).getText();
         assertEquals("Имя и Фамилия указаные неверно. Допустимы только русские буквы, пробелы и дефисы.", text.trim());
+    }
+
+    @Test
+    void shouldNotTestNoName() {
+        WebElement form = driver.findElement(By.cssSelector("form"));
+        form.findElement(By.cssSelector("[data-test-id=name] input")).sendKeys("");
+        form.findElement(By.cssSelector("[data-test-id=phone] input")).sendKeys("+79270000000");
+        form.findElement(By.cssSelector("[data-test-id=agreement]")).click();
+        form.findElement(By.cssSelector("button")).click();
+        String text = driver.findElement(By.cssSelector("[data-test-id=name] .input__sub")).getText();
+        assertEquals("Поле обязательно для заполнения", text.trim());
+    }
+
+    @Test
+    void shouldNotTestWrongNum() {
+        WebElement form = driver.findElement(By.cssSelector("form"));
+        form.findElement(By.cssSelector("[data-test-id=name] input")).sendKeys("Василий");
+        form.findElement(By.cssSelector("[data-test-id=phone] input")).sendKeys("+792700000000");
+        form.findElement(By.cssSelector("[data-test-id=agreement]")).click();
+        form.findElement(By.cssSelector("button")).click();
+        String text = driver.findElement(By.cssSelector("[data-test-id=phone] .input__sub")).getText();
+        assertEquals("Телефон указан неверно. Должно быть 11 цифр, например, +79012345678.", text.trim());
+    }
+
+    @Test
+    void shouldNotTestNoNum() {
+        WebElement form = driver.findElement(By.cssSelector("form"));
+        form.findElement(By.cssSelector("[data-test-id=name] input")).sendKeys("Василий");
+        form.findElement(By.cssSelector("[data-test-id=phone] input")).sendKeys("");
+        form.findElement(By.cssSelector("[data-test-id=agreement]")).click();
+        form.findElement(By.cssSelector("button")).click();
+        String text = driver.findElement(By.cssSelector("[data-test-id=phone] .input__sub")).getText();
+        assertEquals("Поле обязательно для заполнения", text.trim());
+    }
+
+    @Test
+    void shouldNotTestNoCheckBox() {
+        WebElement form = driver.findElement(By.cssSelector("form"));
+        form.findElement(By.cssSelector("[data-test-id=name] input")).sendKeys("Василий");
+        form.findElement(By.cssSelector("[data-test-id=phone] input")).sendKeys("");
+//        form.findElement(By.cssSelector("[data-test-id=agreement]")).click();
+        form.findElement(By.cssSelector("button")).click();
+        String text = driver.findElement(By.cssSelector("[data-test-id=agreement] [role=presentation]")).getText();
+        assertEquals("Я соглашаюсь с условиями обработки и использования моих персональных данных и разрешаю сделать запрос в бюро кредитных историй", text.trim());
     }
 }
 
